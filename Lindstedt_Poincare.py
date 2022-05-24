@@ -6,9 +6,41 @@ Richardson, D.,
 """
 
 import numpy as np
+from scipy import optimize
 
 def find_lagrangian_pts(mu):
+    """
+    Find 5 Lagrangian points in the synodic rotating frame
+    :param mu: M1/(M1+M2)
+    :return: cooridnates of L1 ~ L5
+    """
 
+    # collinear points
+    # Lagrange point is a equilibrium of energy gradient
+    # i.e., find the points s.t. dU/dx = 0
+
+    def fun(x):  # dU/dx
+        return -(1-mu)/(np.abs(x+mu))**3 * (x+mu) - mu / (np.abs(x+mu-1))**3 * (x+mu-1) + x
+
+    # location of M1 (minor body)
+    l = 1 - mu
+
+    sol1 = optimize.root(fun, 0.95 * l, method='hybr')  # L1
+    l1 = np.array(sol1.x[0], 0, 0)
+
+    sol2 = optimize.root(fun, 1.03 * l, method='hybr')  # L2
+    l2 = np.array(sol2.x[0], 0, 0)
+
+    sol3 = optimize.root(fun, -l, method='hybr')  # L3
+    l3 = np.array(sol3.x[0], 0, 0)
+
+    # equilateral points
+    # L4
+    l4 = np.array([np.cos(np.pi / 3) - mu, np.sin(np.pi / 3), 0])
+    # L5
+    l5 = np.array([np.cos(np.pi / 3) - mu, -np.sin(np.pi / 3), 0])
+
+    return l1, l2, l3, l4, l5
 
 
 def get_lambda(c2):
@@ -31,17 +63,14 @@ def get_lambda(c2):
     return lam
 
 
-def get_c(n1, fam, mu):
+def get_c(gl, fam, mu):
     """
     obtain coefficients c2, c3, c4
-    :param n1: mean motion
+    :param gl: gamma_L
     :param fam: Lagrange point (L1, L2 L3)
     :param mu: ratio M1/(M1+M2), M1 = minor body, M2 = major body
     :return: c2, c3, c4
     """
-
-    # gamma_L
-    gl = n1 ** (2/3)
 
     # obtain c2, c3, and c4
     if fam == 1:
@@ -78,14 +107,27 @@ Az = 1.25e5      # km
 
 ##########
 
+# obtain the lagrangian points in synodic rotating frame
+l1,l2,l3,l4,l5 = find_lagrangian_pts(mu)
+
+# get gammaL, normalizing term of Length
+if fam == 1:
+    gl = np.abs((1 - mu) - l1[0])
+elif fam == 2:
+    gl = np.abs((1 - mu) - l2[0])
+elif fam == 3:
+    gl = np.abs(mu - l3[0])
+else:
+    raise Exception('Family number has to be 1, 2, or 3')
+
+c2, c3, c4 = get_c(gl, fam, mu)
 lam = get_lambda(c2)
-c2, c3, c4 = get_c(n1, fam, mu)
 
 Delta = lam**2 - c2
 
 k = (lam**2 + 1 + 2*c2) / (2 * lam)
 
-#
+# d1 and d2
 d1 = 3 * lam**2 / k * (k * (6 * lam**2 - 1) - 2 * lam)
 d2 = 8 * lam**2 / k * (k * (11 * lam**2 - 1) - 2 * lam)
 
@@ -133,11 +175,18 @@ if Ax < Ax_min:
     raise ValueError("Error happened when obtaining Ax.")
 
 # frequency correction term. omega1 = 0
+# cf. omega is NOT a frequency.
 omega2 = s1 * Ax**2 + s2 * Az**2
 omega = 1 + omega2
 
+# true period [s], (NOT non-dimensional time)
+period = 2 * np.pi / (lam * omega)
+
+tau = np.linspace(0, omega * period, 400)
+
 # switching function delta_n
-d_n = 2 - n
+d_n = 2 - fam
+
 
 
 
