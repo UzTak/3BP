@@ -3,6 +3,12 @@ Initial Guess generation based on Lindstedt-Poincare method (3rd order approxima
 Reference:
 Richardson, D.,
 "Analytic Construction of Periodic Orbits about the Collinear Points," 1979
+
+[Key Implementation]
+In the original paper, n1 (mean motion) and gamma_L "absorbs" the normalization of
+(un-normalized) a1 [km] (mean distance of M1 & M2).
+To make the algorithm compatible to many other 3BP (which normalize a1 as well), we set a1 = 1, so that n1 = 1
+(i.e., canonical form).
 """
 
 import numpy as np
