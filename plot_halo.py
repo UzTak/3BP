@@ -7,6 +7,7 @@ from mpl_toolkits import mplot3d
 from Lindstedt_Poincare import initial_guess_halo, find_lagrangian_pts
 from optimize_halo import optimize_halo
 from propagate import propagate_cr3bp, propagate_cr3bp_with_STM
+from plot_inv_manifold import plot_inv_manifold
 
 
 # set-up of problem
@@ -29,17 +30,21 @@ sopt_ini, period_opt = optimize_halo(s0_ini, period0, mu)
 
 (pos, vel, acc_f, stm_f) = propagate_cr3bp_with_STM(sopt_ini, mu, period_opt)
 
+# find the fixed points
 l1, l2, l3, l4, l5 = find_lagrangian_pts(mu)
-
 
 # Plot the orbits
 fig = plt.figure()
 ax = plt.axes(projection='3d')
 
-ax.plot3D(s0[0,:], s0[1,:], s0[2,:], color='gray', label='initial guess')
+# plot invariant manifolds
+fig, ax = plot_inv_manifold(fig, ax, mu, sopt_ini, period_opt, eps='fix', arc_num=20, t_prop=5)
+
+
+# ax.plot3D(s0[0,:], s0[1,:], s0[2,:], color='gray', label='initial guess')
 # ax.scatter(sopt_ini[0], sopt_ini[1], sopt_ini[2], color='orange')
 # ax.scatter(s0_ini[0], s0_ini[1], s0_ini[2], color='red')
-ax.plot3D(pos[:,0], pos[:,1], pos[:,2], color='blue', label='accurate')
+# ax.plot3D(pos[:,0], pos[:,1], pos[:,2], color='blue', label='accurate')
 # ax.plot3D(pos_[:,0], pos_[:,1], pos_[:,2], color='purple', label='test')
 ax.scatter(l2[0], l2[1], l2[2], marker='*', color='orange', label='L2')
 
