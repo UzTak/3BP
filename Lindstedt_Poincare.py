@@ -162,6 +162,10 @@ def initial_guess_halo(lp, fam, mu, Az_km, lstar):
         mu (float): M1/(M1 + M2), where M1 is the minor body
         Az (float): z-direction amplitude [km] (>= 0)
         lstar (float): # canonical length (Earth - Moon distance, etc.) [km]
+    reutrn:
+        s0 (np.array): initial state guess (based on the analytical method)
+        period (float): period of the Halo orbit
+        s0_ini (np.array): initial state vector of the Halo orbit (maintain the symmetry of the Halo oribt)
     """
 
     phi = 0  # phase delay of x and y component. psi = phi + n * pi /2

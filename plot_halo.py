@@ -53,24 +53,25 @@ s0, period0, s0_ini = initial_guess_halo(lp, fam, mu, Az_km, lstar)
 sopt_ini, period_opt = optimize_halo(s0_ini, period0, mu)
 
 # Generate the Trajectory with the optimized variables
+(pos, vel, acc_f, stm_f) = propagate_cr3bp_with_STM(sopt_ini, mu, period_opt)
 
 # store cartesian state
 # state0 = s0[:,0].T
 # (pos_,vel_, acc_f_, stm_f_) = propagate_cr3bp_with_STM(state0, mu, period0/2)
 
-(pos, vel, acc_f, stm_f) = propagate_cr3bp_with_STM(sopt_ini, mu, period_opt)
+
 
 # find the fixed points
 l1, l2, l3, l4, l5 = find_lagrangian_pts(mu)
 
 # Plot the orbits
 fig = plt.figure()
-# ax = plt.axes(projection='3d')
-ax = plt.axes()
+ax = plt.axes(projection='3d')
+# ax = plt.axes()
 
 
 # plot invariant manifolds
-fig, ax = plot_inv_manifold(fig, ax, mu, sopt_ini, period_opt, eps='fix', arc_num=20, t_prop=4.3)
+fig, ax = plot_inv_manifold(fig, ax, mu, sopt_ini, period_opt, eps='fix', arc_num=20, t_prop=10, d=3)
 
 
 # ax.plot3D(s0[0,:], s0[1,:], s0[2,:], color='gray', label='initial guess')
@@ -83,6 +84,9 @@ ax.scatter(l2[0], l2[1], marker='d', color='orange', s=20, label='L2')
 # set_axes_equal(ax)
 ax.axis("equal")
 ax.grid(visible=True, which='both')
+
+
+
 
 ax.set_xlabel('x, LU')
 ax.set_ylabel('y, LU')
