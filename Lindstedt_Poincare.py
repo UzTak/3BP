@@ -17,7 +17,7 @@ from mpl_toolkits import mplot3d
 import matplotlib.pyplot as plt
 
 
-def find_lagrangian_pts(mu):
+def find_lagrange_pts(mu):
     """
     Find 5 Lagrangian points in the synodic rotating frame
     :param mu: M1/(M1+M2)
@@ -171,7 +171,7 @@ def initial_guess_halo(lp, fam, mu, Az_km, lstar):
     phi = 0  # phase delay of x and y component. psi = phi + n * pi /2
 
     # obtain the lagrangian points in synodic rotating frame
-    l1,l2,l3,_,_ = find_lagrangian_pts(mu)
+    l1,l2,l3,_,_ = find_lagrange_pts(mu)
 
     l_s = np.zeros((1,3))
     if lp == 1:

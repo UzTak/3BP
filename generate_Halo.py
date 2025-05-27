@@ -79,7 +79,7 @@ fig = plt.figure()
 ax = plt.axes(projection='3d')
 
 # e.g., 9:2 NRHO, 6.5 days
-tof = 6.5 * 24*60*60 / TU
+tof = 13.3 * (24*60*60 / TU)
 row = df.loc[(df.iloc[:,7]-tof).abs().argsort()[0]]
 tof = row[7]
 s0  = row[0:6]
@@ -118,7 +118,7 @@ data = {
 }
 
 
-filename = '9_2_S_Halo.json'
+filename = '13_3day_S_Halo.json'
 with open(filename, 'w') as json_file:
     json.dump(data, json_file, indent=4)
     
